@@ -90,7 +90,8 @@ bool Output::isBlinking() {
 }
 
 void Output::run() {
-    outputs.forEach([](Output* o) -> void {
+    outputs.forEach([](Output* o, size_t index) -> bool {
         o->pollEvent();
+        return true;
     });
 }
