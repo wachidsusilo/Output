@@ -8,7 +8,13 @@ The blinking pattern can be set through `setPattern` method. The default value i
 
 Output led(2);
 
+void onBlinkFinished() {
+    Serial.println("Blink finished");
+}
+
 void setup() {
+    Serial.begin(115200);
+
     //true means active low
     //false means active high
     led.begin(true);
@@ -30,12 +36,12 @@ void setup() {
     //100ms ON, 100ms OFF, 100ms ON, 700ms OFF
     led.setPattern(100, 100, 100, 700);
 
-    //Set the blink count
-    //Zero (0) means infinite, this is the default value
-    led.setBlinkCount(5);
+    //Assign callback
+    led.onBlinkFinished(onBlinkFinished);
 
     //Blink the LED
-    led.blink();
+    //Zero (0) means infinite, this is the default value
+    led.blink(5);
 
     //Stop blinking the LED
     led.stop();

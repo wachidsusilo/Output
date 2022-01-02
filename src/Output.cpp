@@ -46,8 +46,11 @@ void Output::blink(const int& count) {
 }
 
 void Output::stop() {
-    blinker.blinking = false;
-    set(LOW);
+    if (blinker.blinking) {
+        blinker.blinking = false;
+        set(LOW);
+        if(callback) callback();
+    }
 }
 
 void Output::onBlinkFinished(Callback callback) {
@@ -72,7 +75,6 @@ void Output::pollEvent() {
                 }
                 if (blinker.count > 0 && blinker.counter >= blinker.count) {
                     stop();
-                    if (callback) callback();
                 } else {
                     if (patterns[blinker.index] > 0) set(HIGH);
                 }

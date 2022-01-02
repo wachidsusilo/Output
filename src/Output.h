@@ -1,12 +1,20 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
+#if defined(ESP32) || defined(ESP8266)
+#include <functional>
+#endif
+
 #include "Arduino.h"
 #include "Timer.h"
 
 class Output {
    public:
+#if defined(ESP32) || defined(ESP8266)
+    using Callback = std::function<void()>;
+#else
     using Callback = void (*)();
+#endif
     Output(const uint8_t& pin = -1);
     ~Output();
 
