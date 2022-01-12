@@ -15,16 +15,24 @@ class Output {
 #else
     using Callback = void (*)();
 #endif
-    Output(const uint8_t& pin = -1);
+
+#ifdef ESP32
+    Output(const uint8_t& pin = -1, const bool& isPwm = false, const uint8_t& channel = 0);
+#else
+    Output(const uint8_t& pin = -1, const bool& isPwm = false);
+#endif
     ~Output();
 
-    void begin(const bool& activeLow = false);
+    void begin(const bool& activeLow = false, const uint16_t& freq = 490, const uint8_t& resolution = 8);
     void blink(const int& count = 0);
     void stop();
     void onBlinkFinished(Callback callback);
     void pollEvent();
 
-    void set(const bool& state);
+    void set(const uint16_t& dutyCycle);
+    void setFrequency(const uint16_t& freq);
+    void setResolution(const uint8_t& resolution);
+    void setDutyCycle(const uint16_t& dutyCycle);
     bool get();
     bool isBlinking();
 
@@ -52,7 +60,10 @@ class Output {
         BlinkData() : counter(0), count(0), index(0), blinking(false) {}
     };
 
+    bool isPwm;
     uint8_t pin;
+    uint16_t duty;
+    uint16_t maxDuty;
     uint32_t id;
     uint32_t counter;
     Callback callback;
@@ -60,6 +71,13 @@ class Output {
     ArrayList<uint32_t> patterns;
 
     boolean activeLow;
+    void write(uint16_t state);
+
+#ifdef ESP32
+    uint8_t channel;
+    uint8_t resolution;
+    uint16_t freq;
+#endif
 
     static ArrayList<Output*> outputs;
     static boolean registered;
